@@ -99,7 +99,7 @@ contract("WBI", accounts => {
     it("should allow post and read result", async () => {
       var account1 = accounts[0]
       var account2 = accounts[1]
-      var blockHeader = 1
+      var blockHeader = "0x" + sha.sha256("block header")
       let actualBalance1 = await web3.eth.getBalance(account1)
       let actualBalance2 = await web3.eth.getBalance(account2)
 
@@ -107,6 +107,7 @@ contract("WBI", accounts => {
       const resBytes = web3.utils.fromAscii("This is a result")
       const roots = calculateRoots(drBytes, resBytes)
       const halfEther = web3.utils.toWei("0.5", "ether")
+      const epoch = 2
 
       const tx1 = wbiInstance.postDataRequest(drBytes, halfEther, {
         from: account1,
@@ -121,10 +122,20 @@ contract("WBI", accounts => {
       })
       await waitForHash(tx2)
 
-      const txRelay = blockRelay.postNewBlock(blockHeader, roots[0], roots[1], {
+      const txRelay = blockRelay.postNewBlock(blockHeader, epoch, roots[0], roots[1], {
         from: accounts[0],
       })
       await waitForHash(txRelay)
+
+      let concatenated = web3.utils.hexToBytes(blockHeader).concat(
+        web3.utils.hexToBytes(
+          web3.utils.padLeft(
+            web3.utils.toHex(epoch), 64
+          )
+        )
+      )
+      let beacon = await wbiInstance.getLastBeacon.call()
+      assert.equal(beacon, web3.utils.bytesToHex(concatenated))
 
       const tx3 = wbiInstance.reportDataRequestInclusion(id1, [id1], 0, blockHeader, {
         from: account2,
@@ -193,7 +204,7 @@ contract("WBI", accounts => {
       const drBytes = web3.utils.fromAscii("This is a DR")
       const resBytes = web3.utils.fromAscii("This is a result")
       const halfEther = web3.utils.toWei("0.5", "ether")
-      var blockHeader = 1
+      var blockHeader = "0x" + sha.sha256("block header")
 
       const tx1 = wbiInstance.postDataRequest(drBytes, halfEther, {
         from: accounts[0],
@@ -230,7 +241,7 @@ contract("WBI", accounts => {
       const drBytes = web3.utils.fromAscii("This is a DR")
       const resBytes = web3.utils.fromAscii("This is a result")
       const halfEther = web3.utils.toWei("0.5", "ether")
-      var fakeBlockHeader = 2
+      var fakeBlockHeader = "0x" + sha.sha256("fake block header")
       var dummySybling = 1
 
       const tx1 = wbiInstance.postDataRequest(drBytes, halfEther, {
@@ -304,7 +315,8 @@ contract("WBI", accounts => {
       const drBytes = web3.utils.fromAscii("This is a DR5")
       const resBytes = web3.utils.fromAscii("This is a result")
       const roots = calculateRoots(drBytes, resBytes)
-      var blockHeader = 2
+      const epoch = 3
+      var blockHeader = "0x" + sha.sha256("block header 2")
       var dummySybling = 1
       const tx1 = wbiInstance.postDataRequest(drBytes, web3.utils.toWei("1", "ether"), {
         from: accounts[0],
@@ -319,10 +331,20 @@ contract("WBI", accounts => {
       })
       await waitForHash(tx2)
 
-      const txRelay = blockRelay.postNewBlock(blockHeader, roots[0], roots[1], {
+      const txRelay = blockRelay.postNewBlock(blockHeader, epoch, roots[0], roots[1], {
         from: accounts[0],
       })
       await waitForHash(txRelay)
+
+      let concatenated = web3.utils.hexToBytes(blockHeader).concat(
+        web3.utils.hexToBytes(
+          web3.utils.padLeft(
+            web3.utils.toHex(epoch), 64
+          )
+        )
+      )
+      let beacon = await wbiInstance.getLastBeacon.call()
+      assert.equal(beacon, web3.utils.bytesToHex(concatenated))
 
       const tx3 = wbiInstance.reportDataRequestInclusion(data1, [data1], 0, blockHeader, {
         from: accounts[0],
@@ -358,8 +380,10 @@ contract("WBI", accounts => {
       const drBytes = web3.utils.fromAscii("This is a DR7")
       const resBytes = web3.utils.fromAscii("This is a result")
       const roots = calculateRoots(drBytes, resBytes)
+      const epoch = 4
 
-      var blockHeader = 3
+      var blockHeader = "0x" + sha.sha256("block header 3")
+
       const tx1 = wbiInstance.postDataRequest(drBytes, web3.utils.toWei("1", "ether"), {
         from: accounts[0],
         value: web3.utils.toWei("1", "ether"),
@@ -372,11 +396,21 @@ contract("WBI", accounts => {
         from: accounts[1],
       })
       await waitForHash(tx2)
-
-      const txRelay = blockRelay.postNewBlock(blockHeader, roots[0], roots[1], {
+      
+      const txRelay = blockRelay.postNewBlock(blockHeader, epoch, roots[0], roots[1], {
         from: accounts[0],
       })
       await waitForHash(txRelay)
+
+      let concatenated = web3.utils.hexToBytes(blockHeader).concat(
+        web3.utils.hexToBytes(
+          web3.utils.padLeft(
+            web3.utils.toHex(epoch), 64
+          )
+        )
+      )
+      let beacon = await wbiInstance.getLastBeacon.call()
+      assert.equal(beacon, web3.utils.bytesToHex(concatenated))
 
       const tx3 = wbiInstance.reportDataRequestInclusion(data1, [data1], 0, blockHeader, {
         from: accounts[0],

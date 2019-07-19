@@ -113,7 +113,7 @@ contract("Using witnet", accounts => {
       assert.equal(pkh, accounts[0])
 
       // Report block
-      blockRelay.postNewBlock(expectedBlockHash, expectedDrHash, expectedResHash, {
+      blockRelay.postNewBlock(expectedBlockHash, epoch, expectedDrHash, expectedResHash, {
         from: accounts[0],
       })
 
