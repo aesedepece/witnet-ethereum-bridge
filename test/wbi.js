@@ -109,6 +109,12 @@ contract("WBI", accounts => {
       const halfEther = web3.utils.toWei("0.5", "ether")
       const epoch = 2
 
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
+
       const tx1 = wbiInstance.postDataRequest(drBytes, halfEther, {
         from: account1,
         value: web3.utils.toWei("1", "ether"),
@@ -117,7 +123,7 @@ contract("WBI", accounts => {
       let txReceipt1 = await web3.eth.getTransactionReceipt(txHash1)
       const id1 = txReceipt1.logs[0].data
 
-      const tx2 = wbiInstance.claimDataRequests([id1], resBytes, {
+      const tx2 = wbiInstance.claimDataRequests([id1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: account2,
       })
       await waitForHash(tx2)
@@ -204,6 +210,12 @@ contract("WBI", accounts => {
       const drBytes = web3.utils.fromAscii("This is a DR")
       const resBytes = web3.utils.fromAscii("This is a result")
       const halfEther = web3.utils.toWei("0.5", "ether")
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
+
       var blockHeader = "0x" + sha.sha256("block header")
 
       const tx1 = wbiInstance.postDataRequest(drBytes, halfEther, {
@@ -220,7 +232,7 @@ contract("WBI", accounts => {
         assert.equal(resBytes, readresBytes1)
       })
 
-      const tx2 = wbiInstance.claimDataRequests([data1], resBytes, {
+      const tx2 = wbiInstance.claimDataRequests([data1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: accounts[1],
       })
       await waitForHash(tx2)
@@ -244,6 +256,12 @@ contract("WBI", accounts => {
       var fakeBlockHeader = "0x" + sha.sha256("fake block header")
       var dummySybling = 1
 
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
+
       const tx1 = wbiInstance.postDataRequest(drBytes, halfEther, {
         from: accounts[0],
         value: web3.utils.toWei("1", "ether"),
@@ -258,7 +276,7 @@ contract("WBI", accounts => {
         assert.equal(resBytes, readresBytes1)
       })
 
-      const tx2 = wbiInstance.claimDataRequests([data1], resBytes, {
+      const tx2 = wbiInstance.claimDataRequests([data1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: accounts[1],
       })
       await waitForHash(tx2)
@@ -294,6 +312,12 @@ contract("WBI", accounts => {
     it("should revert because DR was already claimed", async () => {
       const drBytes = web3.utils.fromAscii("This is a DR4")
       const resBytes = web3.utils.fromAscii("This is a result")
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
+
       const tx1 = wbiInstance.postDataRequest(drBytes, web3.utils.toWei("1", "ether"), {
         from: accounts[0],
         value: web3.utils.toWei("1", "ether"),
@@ -302,12 +326,12 @@ contract("WBI", accounts => {
       let txReceipt1 = await web3.eth.getTransactionReceipt(txHash1)
       let data1 = txReceipt1.logs[0].data
 
-      const tx2 = wbiInstance.claimDataRequests([data1], resBytes, {
+      const tx2 = wbiInstance.claimDataRequests([data1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: accounts[1],
       })
       await waitForHash(tx2)
 
-      await truffleAssert.reverts(wbiInstance.claimDataRequests([data1], resBytes, {
+      await truffleAssert.reverts(wbiInstance.claimDataRequests([data1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: accounts[1],
       }), "One of the listed data requests was already claimed")
     })
@@ -318,6 +342,13 @@ contract("WBI", accounts => {
       const epoch = 3
       var blockHeader = "0x" + sha.sha256("block header 2")
       var dummySybling = 1
+
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
+
       const tx1 = wbiInstance.postDataRequest(drBytes, web3.utils.toWei("1", "ether"), {
         from: accounts[0],
         value: web3.utils.toWei("1", "ether"),
@@ -326,7 +357,7 @@ contract("WBI", accounts => {
       let txReceipt1 = await web3.eth.getTransactionReceipt(txHash1)
       let data1 = txReceipt1.logs[0].data
 
-      const tx2 = wbiInstance.claimDataRequests([data1], resBytes, {
+      const tx2 = wbiInstance.claimDataRequests([data1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: accounts[1],
       })
       await waitForHash(tx2)
@@ -360,6 +391,13 @@ contract("WBI", accounts => {
       const resBytes = web3.utils.fromAscii("This is a result")
       var blockHeader = 1
       var dummySybling = 1
+
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
+
       const tx1 = wbiInstance.postDataRequest(drBytes, web3.utils.toWei("1", "ether"), {
         from: accounts[0],
         value: web3.utils.toWei("1", "ether"),
@@ -368,7 +406,7 @@ contract("WBI", accounts => {
       let txReceipt1 = await web3.eth.getTransactionReceipt(txHash1)
       let data1 = txReceipt1.logs[0].data
 
-      const tx2 = wbiInstance.claimDataRequests([data1], resBytes, {
+      const tx2 = wbiInstance.claimDataRequests([data1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: accounts[1],
       })
       await waitForHash(tx2)
@@ -382,6 +420,12 @@ contract("WBI", accounts => {
       const roots = calculateRoots(drBytes, resBytes)
       const epoch = 4
 
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
+
       var blockHeader = "0x" + sha.sha256("block header 3")
 
       const tx1 = wbiInstance.postDataRequest(drBytes, web3.utils.toWei("1", "ether"), {
@@ -392,7 +436,7 @@ contract("WBI", accounts => {
       let txReceipt1 = await web3.eth.getTransactionReceipt(txHash1)
       let data1 = txReceipt1.logs[0].data
 
-      const tx2 = wbiInstance.claimDataRequests([data1], resBytes, {
+      const tx2 = wbiInstance.claimDataRequests([data1], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig, {
         from: accounts[1],
       })
       await waitForHash(tx2)

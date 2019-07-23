@@ -101,9 +101,16 @@ contract("Using witnet", accounts => {
       hash.update(web3.utils.hexToBytes(expectedDrHash))
       hash.update(web3.utils.hexToBytes(web3.utils.utf8ToHex(stringRes)))
       var expectedResHash = "0x" + hash.hex()
+      const epoch = 1
+
+      const fakePoe = [1, 1, 1, 1]
+      const fakePubKey = [1, 1]
+      const fakeuHelpers = [1, 1]
+      const fakevHelpers = [1, 1, 2, 2]
+      const fakeSig = web3.utils.fromAscii("This is a signature")
 
       // Claim Data Request Inclusion
-      let tx2 = wbi.claimDataRequests([expectedId], web3.utils.utf8ToHex("PoE"))
+      let tx2 = wbi.claimDataRequests([expectedId], fakePoe, fakePubKey, fakeuHelpers, fakevHelpers, fakeSig)
       await waitForHash(tx2)
 
       let drInfo2 = await wbi.requests(expectedId)
