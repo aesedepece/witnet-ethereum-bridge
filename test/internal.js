@@ -33,5 +33,14 @@ contract("WBITestHelper - internals", accounts => {
         assert.notEqual(result, true)
       })
     }
+    for (let [index, test] of testdata.sig.valid.entries()) {
+      it(`sig (${index + 1})`, async () => {
+        const message = web3.utils.fromAscii(test.message)
+        const pubKey = test.public_key
+        const sig = test.signature
+        const result = await helper._verifySig.call(message, pubKey, sig)
+        assert.equal(result, true)
+      })
+    }
   })
 })
